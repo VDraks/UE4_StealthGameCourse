@@ -2,6 +2,7 @@
 
 #include "FPSCharacter.h"
 #include "FPSProjectile.h"
+#include "GeneratedCodeHelpers.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -124,3 +125,12 @@ void AFPSCharacter::Tick(float DeltaSeconds)
 		CameraComponent->SetRelativeRotation(NewRot);
 	}
 }
+
+void AFPSCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps ) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(AFPSCharacter, bIsCarryingObjective);
+
+	// DOREPLIFETIME_CONDITION(AFPSCharacter, bIsCarryingObjective, COND_OwnerOnly);
+ }
