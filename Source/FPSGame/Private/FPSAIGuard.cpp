@@ -4,6 +4,7 @@
 #include "FPSAIGuard.h"
 
 #include "DrawDebugHelpers.h"
+#include "FPSAIController.h"
 #include "Perception/PawnSensingComponent.h"
 
 #include "FPSGameMode.h"
@@ -20,6 +21,16 @@ AFPSAIGuard::AFPSAIGuard()
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::AFPSAIGuard::OnNoiseHeard);
 
 	GuardState = EAIState::Idle;
+}
+
+const TArray<AActor*>& AFPSAIGuard::GetWaypoints()
+{
+	return Waypoints;
+}
+
+EAIState AFPSAIGuard::GetGuardState()
+{
+	return GuardState;
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +106,11 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 	GuardState = NewState;
 
 	OnStateChanged(GuardState);
+
+	if (GuardState != EAIState::Idle)
+	{
+		GetController()->StopMovement();
+	}
 }
 
 // Called every frame

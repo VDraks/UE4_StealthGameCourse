@@ -5,26 +5,24 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
+#include  "Challenges/IFPSGuard.h"
+
 #include "FPSAIGuard.generated.h"
 
 class UPawnSensingComponent;
 
-UENUM(BlueprintType)
-enum class EAIState : uint8
-{
-	Idle,
-	Suspicious,
-	Alerted
-};
-
 UCLASS()
-class FPSGAME_API AFPSAIGuard : public ACharacter
+class FPSGAME_API AFPSAIGuard : public ACharacter, public IFPSGuard
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	AFPSAIGuard();
+
+	virtual const TArray<AActor*>& GetWaypoints() override;
+
+	virtual EAIState GetGuardState() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -52,6 +50,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnStateChanged(EAIState NewState);
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TArray<AActor*> Waypoints;
 
 public:	
 	// Called every frame
