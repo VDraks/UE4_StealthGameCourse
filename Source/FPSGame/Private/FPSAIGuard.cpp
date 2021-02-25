@@ -4,9 +4,10 @@
 #include "FPSAIGuard.h"
 
 #include "DrawDebugHelpers.h"
-#include "FPSAIController.h"
 #include "Perception/PawnSensingComponent.h"
+#include "GeneratedCodeHelpers.h"
 
+#include "FPSAIController.h"
 #include "FPSGameMode.h"
 
 // Sets default values
@@ -96,6 +97,13 @@ void AFPSAIGuard::ResetOrientation()
 	SetGuardState(EAIState::Idle);
 }
 
+void AFPSAIGuard::OnRep_GuardState()
+{
+	OnStateChanged(GuardState);
+
+	
+}
+
 void AFPSAIGuard::SetGuardState(EAIState NewState)
 {
 	if (GuardState == NewState)
@@ -104,9 +112,8 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 	}
 
 	GuardState = NewState;
-
-	OnStateChanged(GuardState);
-
+	OnRep_GuardState();
+	
 	if (GuardState != EAIState::Idle)
 	{
 		GetController()->StopMovement();
@@ -118,4 +125,11 @@ void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AFPSAIGuard::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps ) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(AFPSAIGuard, GuardState);
 }
